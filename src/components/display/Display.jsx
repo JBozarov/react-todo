@@ -1,14 +1,23 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import AddTodo from '../addTodo/AddTodo'
 import { Button } from 'react-bootstrap'
 import "./Display.css"
 import nothing from './nothing.jpg'
 
 const Display = () => {
+   const didUpdate = useRef(false)
    const [ todos, setTodos ] = useState(["Finish capstone 1 in 4 days", "Have a dinner with family"])
    const [ clicked, setClicks ] = useState([])
    const [ toggle, setToggle ] = useState(true); 
+   const [ searchBy, setSearchBy ] = useState('') 
+   const [ filteredTodo, setFilteredTodo ] = useState([]) 
 
+   useEffect( () => {
+         let temp = todos.filter(todo => todo.includes(searchBy)); 
+         setFilteredTodo(temp); 
+   }, [])
+   const handleChange = val => setSearchBy(val); 
+   console.log(filteredTodo)
    const addtodo = v => {
       setTodos([...todos, v])
       setToggle(true)
@@ -32,6 +41,18 @@ const Display = () => {
    }
 
    return (
+      <div>
+      <div className='search-box' >
+         <input className='serach' placeholder="Search your todo" onChange={e => {
+            let sliced = todos.slice(); 
+            const test = todos.filter(todo => todo.toLowerCase().includes(e.target.value.toLowerCase()))
+            setTodos(test)
+            console.log(e.target.value)
+            if(e.target.value === '') {
+               setTodos(sliced)
+            }
+         }} /> 
+      </div>
       <div className={toggle ? "display image" : "no-iamge"}  >
          <AddTodo addtodo={addtodo} clearAll={clearAll} /> 
          { todos.length > 0 ? todos.map((todo, i) => 
@@ -46,6 +67,7 @@ const Display = () => {
          :
          <img src={nothing} style={{width: '40%'}} />
          }
+      </div>
       </div>
    )
 }
