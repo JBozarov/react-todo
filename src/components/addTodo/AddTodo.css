@@ -1,0 +1,9 @@
+.input-div{
+   width: 60%;
+   margin: 2vh auto;
+   display: flex;
+}
+
+.btn{
+   width: 100px;
+}
